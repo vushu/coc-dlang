@@ -8,10 +8,10 @@ export async function activate(context: ExtensionContext): Promise<void> {
   }
   const serverOptions = {
     command: 'serve-d', // run serve-d
-    rootPatterns: ['dub.json', 'dub.sdl'],
   };
   const clientOptions = {
     documentSelector: ['d'], // run serve-d on d files
+    rootPatterns: ['dub.json', 'dub.sdl'],
   };
   const client = new LanguageClient(
     'coc-dlang', // the id
