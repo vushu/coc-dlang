@@ -1,6 +1,11 @@
-import { ExtensionContext, services, LanguageClient } from 'coc.nvim';
+import { workspace, ExtensionContext, services, LanguageClient } from 'coc.nvim';
 
 export async function activate(context: ExtensionContext): Promise<void> {
+  const config = workspace.getConfiguration('coc-dlang');
+  const isEnable = config.get<boolean>('enable', true);
+  if (!isEnable) {
+    return;
+  }
   const serverOptions = {
     command: 'serve-d', // run serve-d
   };
