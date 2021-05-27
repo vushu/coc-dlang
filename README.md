@@ -3,10 +3,10 @@
 # Prerequisites
 
 Get
-https://github.com/dlang-community/DCD/releases
-dcd-server
-https://github.com/Pure-D/serve-d/releases
-serve-d
+https://github.com/dlang-community/DCD/releases  
+dcd-server  
+https://github.com/Pure-D/serve-d/releases  
+serve-d  
 
 copy both, to example: ~/dlang-ls
 
