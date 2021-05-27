@@ -1,12 +1,9 @@
-# coc-dlang
+## Prerequisites
 
-# Prerequisites
-
-Get
-https://github.com/dlang-community/DCD/releases
-dcd-server
-https://github.com/Pure-D/serve-d/releases
-serve-d
+Get dcd-server from:  
+https://github.com/dlang-community/DCD/releases  
+Get serve-d from:  
+https://github.com/Pure-D/serve-d/releases  
 
 copy both, to example: ~/dlang-ls
 
@@ -16,16 +13,11 @@ PATH=$PATH:~/dlang-ls/
 
 source .bashrc
 
-
-dlang support for coc
+# dlang support for coc
 
 ## Install
 
 `:CocInstall coc-dlang`
-
-## Keymaps
-
-`nmap <silent> <C-l> <Plug>(coc-coc-dlang-keymap)`
 
 ## License
 
