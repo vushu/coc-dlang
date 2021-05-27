@@ -1,8 +1,8 @@
 ## Prerequisites
 
-Get dcd-server from:  
+get dcd-server from:  
 https://github.com/dlang-community/DCD/releases  
-Get serve-d from:  
+get serve-d from:  
 https://github.com/Pure-D/serve-d/releases  
 
 copy both, to example: ~/dlang-ls
