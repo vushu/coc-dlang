@@ -1,3 +1,4 @@
+WIP
 # coc-dlang
 
 dlang support for coc
@@ -9,10 +10,6 @@ dlang support for coc
 ## Keymaps
 
 `nmap <silent> <C-l> <Plug>(coc-coc-dlang-keymap)`
-
-## Lists
-
-`:CocList demo_list`
 
 ## License
 
