@@ -12,7 +12,7 @@ copy both, to example: ~/dlang-ls
 
 add this to your .bashrc
 
-PATH=$PATH:~/dlang/
+PATH=$PATH:~/dlang-ls/
 
 source .bashrc
 
