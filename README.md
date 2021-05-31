@@ -25,7 +25,7 @@ implement interface or methods
 
 ```
 nmap <silent> <leader>di :call CocActionAsync('runCommand', 'dlang.implementMethods')<CR>
-    ```
+```
 
 
 ## License
