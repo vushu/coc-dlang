@@ -109,7 +109,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
         let start = document.getPosition(startPos.line, startPos.character);
 
         change.forEach((c => {
-          c.newText = c.newText.replace(/(?:\${\d})/g, `throw new Exception("Not yet implemented")`);
+          c.newText = c.newText.replace(/(?:\${\d})/g, `throw new Exception("Not yet implemented");`);
         }));
 
 
