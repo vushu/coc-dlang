@@ -19,6 +19,15 @@ source .bashrc
 
 `:CocInstall coc-dlang`
 
+## Command 
+
+implement interface or methods
+
+```
+nmap <silent> <leader>di :call CocActionAsync('runCommand', 'dlang.implementMethods')<CR>
+    ```
+
+
 ## License
 
 MIT
