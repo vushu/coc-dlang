@@ -25,7 +25,7 @@ source .bashrc
 
 implement interface or methods
 ```
-nmap <silent> <leader>di :call CocActionAsync('runCommand', 'dlang.implementMethods')<CR>
+nmap <silent> <leader>di :call CocActionAsync('runCommand', 'code-d.implementMethods')<CR>
 ```
 
 
