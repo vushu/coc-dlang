@@ -164,7 +164,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
 
 
   });
-  const commandImplementMethods = commands.registerCommand("dlang.implementMethods", async () => {
+  const commandImplementMethods = commands.registerCommand("code-d.implementMethods", async () => {
     const document = await workspace.document;
     const position = await window.getCursorPosition();
     const range = document.getWordRangeAtPosition(position);
