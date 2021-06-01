@@ -1,7 +1,5 @@
 ## Prerequisites
 
-get dcd-server from:  
-https://github.com/dlang-community/DCD/releases  
 get serve-d from:  
 https://github.com/Pure-D/serve-d/releases  
 
@@ -22,7 +20,6 @@ source .bashrc
 ## Command 
 
 implement interface or methods
-
 ```
 nmap <silent> <leader>di :call CocActionAsync('runCommand', 'dlang.implementMethods')<CR>
 ```

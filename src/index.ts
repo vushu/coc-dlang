@@ -42,10 +42,10 @@ export async function activate(context: ExtensionContext): Promise<void> {
     command: 'serve-d', // run serve-d
     args: [
       '--require', 'D',
-      '--lang', 'en',
-      '--provide', 'http',
-      '--provide', 'implement-snippets',
-      '--provide', 'context-snippets'],
+      '--lang', 'en']
+      //'--provide', 'http',
+      //'--provide', 'implement-snippets',
+      //'--provide', 'context-snippets'],
   };
   const clientOptions = {
     documentSelector: ['d'], // run serve-d on d files
@@ -56,6 +56,10 @@ export async function activate(context: ExtensionContext): Promise<void> {
     serverOptions,
     clientOptions
   );
+
+ const commandDownloadDCD = commands.registerCommand('coded/logInstall', async () => {
+    window.showPrompt("hello");
+  });
 
 
   workspace.registerKeymap(['n', 'i'], 'dlang-dostuff', async () => {
@@ -98,21 +102,17 @@ export async function activate(context: ExtensionContext): Promise<void> {
       location: location
     };
 
+    let clientReady = false;
+    client.onReady().then(()=> {
+      clientReady = true;
+    });
+
     client.sendRequest<any>('served/implementMethods', params).then((change: TextEdit[]) => {
       if (!change.length){
         //window.showPrompt('Nothing in the request');
-        window.showInformationMessage('failed to request client started: ' + client.started);
+        window.showInformationMessage('Couldn\'t implement methods, clientReady: ' + clientReady);
       }
       else{
-        //window.showMenuPicker(change.map(i => i.newText));
-        let startPos = change[0].range.start;
-        let start = document.getPosition(startPos.line, startPos.character);
-
-        change.forEach((c => {
-          c.newText = c.newText.replace(/(?:\${\d})/g, `throw new Exception("Not yet implemented");`);
-        }));
-
-
         document.applyEdits(change);
       }
     });
@@ -172,6 +172,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
     commandImplementMethods,
     commandIgnoreDscannerKey,
     commandListConfiguration,
+    commandDownloadDCD,
     services.registLanguageClient(client));
 
   //await commands.executeCommand('dlang.dostuff');
