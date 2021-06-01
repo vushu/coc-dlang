@@ -7,7 +7,7 @@ https://github.com/Pure-D/serve-d/releases
 get dcd-client and dcd-server from:  
 https://github.com/dlang-community/DCD/releases  
 
-copy both, to example: ~/dlang-ls
+extract all, to example: ~/dlang-ls
 
 add this to your .bashrc
 
