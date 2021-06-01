@@ -1,6 +1,6 @@
 {
     "name": "coc-dlang",
-    "version": "1.0.7",
+    "version": "1.0.8",
     "description": "dlang support for coc",
     "author": "Dan Vu <danvu.hustle@gmail.com>",
     "license": "MIT",
@@ -38,9 +38,9 @@
     },
     "activationEvents": [
         "onLanguage:d",
-		"onLanguage:dml",
-		"workspaceContains:dub.json",
-		"workspaceContains:dub.sdl"
+        "onLanguage:dml",
+        "workspaceContains:dub.json",
+        "workspaceContains:dub.sdl"
     ],
     "contributes": {
         "configuration": {
