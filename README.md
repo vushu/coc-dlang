@@ -5,7 +5,7 @@ get serve-d from:
 https://github.com/Pure-D/serve-d/releases  
 
 get dcd-client and dcd-server from:  
-https://github.com/Pure-D/serve-d/releases  
+https://github.com/dlang-community/DCD/releases  
 
 copy both, to example: ~/dlang-ls
 
