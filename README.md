@@ -1,6 +1,10 @@
 ## Prerequisites
 
+
 get serve-d from:  
+https://github.com/Pure-D/serve-d/releases  
+
+get dcd-client and dcd-server from:  
 https://github.com/Pure-D/serve-d/releases  
 
 copy both, to example: ~/dlang-ls

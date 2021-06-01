@@ -37,34 +37,24 @@
         "typescript": "^4.1.2"
     },
     "activationEvents": [
-        "onLanguage:d",
-		"onLanguage:dml",
-		"workspaceContains:dub.json",
-		"workspaceContains:dub.sdl"
+        "*"
     ],
     "contributes": {
         "configuration": {
             "type": "object",
             "title": "coc-dlang configuration",
             "properties": {
-                "coc-dlang.enabled": {
+                "d.enabled": {
                     "type": "boolean",
                     "default": true,
                     "description": "Enable coc-dlang extension"
-                },
-                "coc-dlang.dcdServerPath": {
-                    "title": "DCD Server Path",
-                    "type": "string",
-                    "scope": "resource",
-                    "default": "/home/vushu/tools/ls/dlang/dcd-server",
-                    "description": "Path of the dcd-server executable. Path can be omitted if in $PATH or installed using code-d"
                 }
             }
         },
         "commands": [
             {
                 "command": "coc-dlang.Command",
-                "title": "d command title"
+                "title": "coc-dlang command title"
             }
         ]
     }

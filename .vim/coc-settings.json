@@ -1,0 +1,6 @@
+{
+  "d.updateSetting": ".config/coc/coc-dlang-data",
+  "coc-dlang.updateSetting": ".config/coc/coc-dlang-data",
+  "coc-dlang.dcdServerPath": ".config/coc/extensions/coc-dlang-data",
+  "d.dcdServerPath": ".config/coc/extensions/coc-dlang-data"
+}
