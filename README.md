@@ -17,11 +17,11 @@ source .bashrc
 ## Command 
 
 implement interface or methods
-``
+```
 nmap <silent> <leader>di :call CocActionAsync('runCommand', 'code-d.implementMethods')<CR>
-``
+```
 CocCommands
-``
+```
 implement interface or methods
 //Download pre-release of serve-d 
 :CocCommand dlang.downloadPreServeD 
@@ -32,7 +32,7 @@ implement interface or methods
 //Download latest stable of dcd 
 :CocCommand dlang.downloadDCD 
 
-``
+```
 
 ## License
 
