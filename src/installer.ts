@@ -86,7 +86,7 @@ export function downloadingLatestDCD() {
 
 	}
 
-	const commando = `curl -s https://api.github.com/repos/dlang-community/DCD/releases/latest | grep browser_download_url | grep ${file} | cut -d '"' -f 4 | wget -i - -P ${outputPath} && cd ${outputPath} && ${extract} && ${cleanup}`
+	const commando = `curl -s https://api.github.com/repos/dlang-community/DCD/releases/latest | grep browser_download_url | grep ${file} | cut -d '"' -f 4 | wget -qi - -P ${outputPath} && cd ${outputPath} && ${extract} && ${cleanup}`
 	//window.showPrompt('downloading dcd!');
 	exec(commando, (err: ExecException | null, stdout: string, stderr: string) => {
 		if (stderr)

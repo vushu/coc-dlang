@@ -49,18 +49,18 @@ export async function activate(context: ExtensionContext): Promise<void> {
   }
   const homedir = require('os').homedir();
   const defaultPath = `${homedir}/.local/share/code-d/bin/serve-d`;
-  const clientPath = `${homedir}/.local/share/code-d/bin/dcd-client`;
-  const serverPath = `${homedir}/.local/share/code-d/bin/dcd-server`;
+  //const clientPath = `${homedir}/.local/share/code-d/bin/dcd-client`;
+  //const serverPath = `${homedir}/.local/share/code-d/bin/dcd-server`;
 
   if (!fs.existsSync(defaultPath)) {
     //window.showPrompt('serve-d doesn\'t exists please run :CocCommand dlang.downloadingLatestServeD or :CocCommand dlang.downloadPreServeD');
     //window.showInformationMessage('select serve-d version:' );
-    window.showQuickpick(['latest', 'pre-release'], 'Select serve-d version').then(chosen => {
+    window.showQuickpick(['pre-release', 'latest'], 'Select serve-d version').then(chosen => {
       if (chosen === 0) {
-        ins.downloadingLatestDCD();
+        ins.downloadingLatestPrereleaseServeD();
       }
       else {
-        ins.downloadingLatestPrereleaseServeD();
+        ins.downloadingLatestServeD();
       }
     });
     //ins.downloadingLatestPrereleaseServeD();
@@ -139,7 +139,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
     var updateSetting = new NotificationType<{ section: string, value: any, global: boolean }, void>("coded/updateSetting");
     client.onNotification(updateSetting, (arg: { section: string, value: any, global: boolean }) => {
 
-      window.showPrompt('section: '+ arg.section + ' path: ' + arg.value);
+      //window.showPrompt('section: '+ arg.section + ' path: ' + arg.value);
       config.update(arg.section, arg.value, arg.global);
     });
 
@@ -147,7 +147,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
     let notificationLogInstall = new NotificationType<string, void>('coded/logInstall');
     client.onNotification(notificationLogInstall, (message: string ) => {
 
-      window.showNotification({content: message, timeout: 10000});
+      window.showNotification({content: message, timeout: 5000});
       //window.showInformationMessage(message);
     });
 
