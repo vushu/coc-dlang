@@ -1,20 +1,10 @@
-## Prerequisites
-
-extract all, to example: ~/dlang-ls
-
-add this to your .bashrc
-
-PATH=$PATH:~/dlang-ls/
-
-source .bashrc
-
 # dlang support for coc
 
 ## Install
 
 `:CocInstall coc-dlang`
 
-## Command 
+## Vim bindings 
 
 implement interface or methods
 ```
