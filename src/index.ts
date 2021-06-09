@@ -1,13 +1,7 @@
-import { DialogConfig, WorkspaceConfiguration, TextEdit, window, workspace, ExtensionContext, services, LanguageClient, commands, TextDocument, Position, Thenable,TextDocumentIdentifier, NotificationType } from 'coc.nvim';
-//import { Range, window, workspace, ExtensionContext, services, LanguageClient, commands, TextDocument, Position, Thenable } from 'vs-code-language-server-protocol';
-interface ImplementMethodsParams
-{
-  /** Text document to look in */
-  textDocument: TextDocumentIdentifier;
+import { DialogConfig, WorkspaceConfiguration, TextEdit, window, workspace, ExtensionContext, services, LanguageClient, commands, TextDocument, Position, Thenable,TextDocumentIdentifier, NotificationType, Progress, CancellationToken } from 'coc.nvim';
+import * as fs from 'fs';
+import * as ins from './installer';
 
-  /** Location of cursor as standard offset */
-  location: number;
-}
 
 interface CodeReplacement
 {
@@ -35,21 +29,71 @@ interface ImportModification
 //return workspace.getConfiguration("d", resource);
 //}
 
+
+
+function checkFileExistsSync(filepath){
+  let flag = true;
+  try{
+    fs.accessSync(filepath, fs.constants.F_OK);
+  }catch(e){
+    flag = false;
+  }
+  return flag;
+}
+
 export async function activate(context: ExtensionContext): Promise<void> {
-  const config = workspace.getConfiguration('coc-dlang');
+  const config = workspace.getConfiguration('d');
   const isEnable = config.get<boolean>('enable', true);
   if (!isEnable) {
     return;
   }
-  //config.update('dcdServerPath', '~/.config/coc/extensions/coc-dlang-data/dcd-server', true);
-  //config.update('dcdClientPath', '~/.config/coc/extensions/coc-dlang-data/dcd-client', true);
+  const homedir = require('os').homedir();
+  const defaultPath = `${homedir}/.local/share/code-d/bin/serve-d`;
+  const clientPath = `${homedir}/.local/share/code-d/bin/dcd-client`;
+  const serverPath = `${homedir}/.local/share/code-d/bin/dcd-server`;
+
+  if (!fs.existsSync(defaultPath)) {
+    //window.showPrompt('serve-d doesn\'t exists please run :CocCommand dlang.downloadingLatestServeD or :CocCommand dlang.downloadPreServeD');
+    //window.showInformationMessage('select serve-d version:' );
+    window.showQuickpick(['latest', 'pre-release'], 'Select serve-d version').then(chosen => {
+      if (chosen === 0) {
+        ins.downloadingLatestDCD();
+      }
+      else {
+        ins.downloadingLatestPrereleaseServeD();
+      }
+    });
+    //ins.downloadingLatestPrereleaseServeD();
+  }
+
+  //if (!fs.existsSync(serverPath)) {
+  //window.showPrompt('dcd doesn\'t exists');
+  //ins.downloadingLatestDCD();
+  //}
+
+
+  //config.update('dcdClientPath', clientPath, true);
+  //config.update('dcdServerPath', serverPath, true);
+  //config.update('updateSetting', '~/.config/coc/coc-dlang-data', true);
+
+  let servedPath = config.get<string>('servedPath', '');
+  if (servedPath === '') {
+    config.update('servedPath', defaultPath, true);
+    servedPath = defaultPath;
+  }
+  //const dcdServerPath = config.get<string>('dcdServerPath', 'nothing');
+  //const dcdClientPath = config.get<string>('dcdClientPath', 'nothing');
+
+  //window.showPrompt(dcdClientPath);
+  //window.showPrompt(dcdServerPath);
+  //window.showPrompt(servedPath);
 
   const serverOptions = {
-    command: 'serve-d', // run serve-d
+    command: servedPath, // run serve-d
     //args: [
-      //'--require', 'D',
-      //'--lang', 'en',
-      //'--provide', 'http']
+    //'--require', 'D']
+    //'--lang', 'en',
+    //'--provide', 'http']
     //'--provide', 'implement-snippets',
     //'--provide', 'context-snippets'],
   };
@@ -57,18 +101,11 @@ export async function activate(context: ExtensionContext): Promise<void> {
     documentSelector: ['d'], // run serve-d on d files
   };
   const client = new LanguageClient(
-    'dlang', // the id
-    //'coc-dlang', // the name of the language server
-    'coc-dlang', // the name of the language server
+    'coc-dlang', // the id
+    'serve-d', // the name of the language server
     serverOptions,
     clientOptions
   );
-
-  //let notificationLogInstall = new NotificationType<string, void>('coded/logInstall');
-  //client.onNotification(notificationLogInstall, (message: string) => {
-  //window.showPrompt(message);
-  //});
-  //
 
 
   workspace.registerKeymap(['n', 'i'], 'dlang-dostuff', async () => {
@@ -80,13 +117,13 @@ export async function activate(context: ExtensionContext): Promise<void> {
   });
 
 
-  const commandlistArchTypes = commands.registerCommand("dlang.listArchTypes", async () => {
+  const commandlistArchTypes = commands.registerCommand("code-d.listArchTypes", async () => {
     client.sendRequest<string[]>('served/listArchTypes').then((result) => {
       window.showInformationMessage("serve-d archtypes: " + result.join(","));
     });
   });
 
-  const commandListConfiguration = commands.registerCommand("dlang.listConfigurations", async () => {
+  const commandListConfiguration = commands.registerCommand("code-d.listConfigurations", async () => {
     client.sendRequest<string[]>('served/listConfigurations').then((result) => {
       window.showInformationMessage("listConfiguration: " + result.join(","));
     });
@@ -94,76 +131,45 @@ export async function activate(context: ExtensionContext): Promise<void> {
   client.onReady().then(()=> {
 
     //client.initializeResult()
-    var workspaceConfiguration = new NotificationType<{ settings: any }, void>("workspace/didChangeConfiguration");
+    var workspaceConfiguration = new NotificationType<{ settings: any }, void>("workspace/didChange");
     client.onNotification(workspaceConfiguration, (arg: { settings: any }) => {
       window.showPrompt('hello');
     });
 
     var updateSetting = new NotificationType<{ section: string, value: any, global: boolean }, void>("coded/updateSetting");
     client.onNotification(updateSetting, (arg: { section: string, value: any, global: boolean }) => {
-      //config(null).update(arg.section, arg.value, arg.global);
-      /*
 
-      switch(arg.section){
-        case 'dcdServerPath':
-      //arg.section = 'coc-dlang'
-          arg.value = '~/.local/share/code-d/bin/dcd-server'
-          arg.global = true;
-          break;
-        case 'dcdClientPath':
-      //arg.section = 'coc-dlang'
-          arg.value = '~/.local/share/code-d/bin/dcd-client'
-          arg.global = true;
-          break;
-      }
-
-       */
-      //config.update(arg.section, arg.value, arg.global);
-      //window.showInformationMessage('section: '+ arg.section + ' path: ' + arg.value);
+      window.showPrompt('section: '+ arg.section + ' path: ' + arg.value);
+      config.update(arg.section, arg.value, arg.global);
     });
 
-    /*
-    let notificationLogInstall = new NotificationType<string, void>('coded/logInstall');
-    client.onNotification(notificationLogInstall, (message: string) => {
 
-      window.showNotification({content: message, timeout: 10000, borderhighlight: 'CocFlating'});
+    let notificationLogInstall = new NotificationType<string, void>('coded/logInstall');
+    client.onNotification(notificationLogInstall, (message: string ) => {
+
+      window.showNotification({content: message, timeout: 10000});
       //window.showInformationMessage(message);
     });
-    */
 
     window.showMessage('served-d ready');
 
   });
 
-  const commandTest2 = commands.registerCommand("dlang.test2", async () => {
-    const document = await workspace.document;
-    const configParams = {
-      items: [
-        {scopeUri: document.uri, section: 'dcdServerPath'}
-      ]
-    };
-
-    client.sendRequest<any>('workspace/configuration', configParams).then((result: any[]) => {
-      window.showMenuPicker(result.map(String.toString));
-    });
-
-
+  const commandDownloadDCD = commands.registerCommand("dlang.downloadDCD", async () => {
+    ins.downloadingLatestDCD();
   });
 
-  const commandTest = commands.registerCommand("dlang.test", async () => {
-    const document = await workspace.document;
-    const configParams = {
-      items: [
-        {scopeUri: document.uri, section: 'dcdServerPath'}
-      ]
-    };
-
-    client.sendRequest<any>('workspace/configuration', configParams).then((result: any[]) => {
-      window.showMenuPicker(result.map(String.toString));
-    });
-
-
+  const commandDownloadServeD = commands.registerCommand("dlang.downloadLatestServeD", async () => {
+    ins.downloadingLatestServeD();
   });
+
+  const commandDownloadPrerelease = commands.registerCommand("dlang.downloadPreServeD", async () => {
+    ins.downloadingLatestPrereleaseServeD();
+  });
+
+
+
+
   const commandImplementMethods = commands.registerCommand("code-d.implementMethods", async () => {
     const document = await workspace.document;
     const position = await window.getCursorPosition();
@@ -192,7 +198,6 @@ export async function activate(context: ExtensionContext): Promise<void> {
         document.applyEdits(change);
       }
     });
-
 
   });
 
@@ -243,10 +248,12 @@ export async function activate(context: ExtensionContext): Promise<void> {
 
   context.subscriptions.push(commandlistArchTypes,
     commandAddImport,
+    commandDownloadServeD,
+    commandDownloadDCD,
+    commandDownloadPrerelease,
     commandImplementMethods,
     commandIgnoreDscannerKey,
     commandListConfiguration,
-    commandTest,
     services.registLanguageClient(client));
 
   //await commands.executeCommand('dlang.dostuff');

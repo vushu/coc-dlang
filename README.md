@@ -1,12 +1,5 @@
 ## Prerequisites
 
-
-get serve-d from:  
-https://github.com/Pure-D/serve-d/releases  
-
-get dcd-client and dcd-server from:  
-https://github.com/dlang-community/DCD/releases  
-
 extract all, to example: ~/dlang-ls
 
 add this to your .bashrc
@@ -24,10 +17,22 @@ source .bashrc
 ## Command 
 
 implement interface or methods
-```
+``
 nmap <silent> <leader>di :call CocActionAsync('runCommand', 'code-d.implementMethods')<CR>
-```
+``
+CocCommands
+``
+implement interface or methods
+//Download pre-release of serve-d 
+:CocCommand dlang.downloadPreServeD 
 
+//Download latest stable of serve-d 
+:CocCommand dlang.downloadLatestServeD 
+
+//Download latest stable of dcd 
+:CocCommand dlang.downloadDCD 
+
+``
 
 ## License
 

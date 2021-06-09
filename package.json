@@ -1,6 +1,6 @@
 {
     "name": "coc-dlang",
-    "version": "1.0.12",
+    "version": "1.0.11",
     "description": "dlang support for coc",
     "author": "Dan Vu <danvu.hustle@gmail.com>",
     "license": "MIT",
@@ -28,6 +28,7 @@
         "semi": true
     },
     "devDependencies": {
+        "@types/node": "^15.12.1",
         "@typescript-eslint/eslint-plugin": "^4.8.2",
         "@typescript-eslint/parser": "^4.8.2",
         "coc.nvim": "^0.0.80",
@@ -47,18 +48,12 @@
             "type": "object",
             "title": "coc-dlang configuration",
             "properties": {
-                "coc-dlang.enabled": {
+                "d.enabled": {
                     "type": "boolean",
                     "default": true,
                     "description": "Enable coc-dlang extension"
-                },
-                "coc-dlang.dcdServerPath": {
-                    "title": "DCD Server Path",
-                    "type": "string",
-                    "scope": "resource",
-                    "default": "/home/vushu/tools/ls/dlang/dcd-server",
-                    "description": "Path of the dcd-server executable. Path can be omitted if in $PATH or installed using code-d"
                 }
+
             }
         },
         "commands": [
@@ -67,5 +62,8 @@
                 "title": "d command title"
             }
         ]
+    },
+    "dependencies": {
+        "@etclabscore/dl-github-releases": "^1.2.1"
     }
 }
