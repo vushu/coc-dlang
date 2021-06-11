@@ -61,8 +61,5 @@
                 "title": "d command title"
             }
         ]
-    },
-    "dependencies": {
-        "@etclabscore/dl-github-releases": "^1.2.1"
     }
 }

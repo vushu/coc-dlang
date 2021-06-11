@@ -1,4 +1,4 @@
-import { DialogConfig, WorkspaceConfiguration, TextEdit, window, workspace, ExtensionContext, services, LanguageClient, commands, TextDocument, Position, Thenable,TextDocumentIdentifier, NotificationType, Progress, CancellationToken } from 'coc.nvim';
+import { DialogConfig, WorkspaceConfiguration, TextEdit, window, workspace, ExtensionContext, services, LanguageClient, commands, TextDocument, Position, Thenable,TextDocumentIdentifier, NotificationType, Progress, CancellationToken, Range } from 'coc.nvim';
 import * as fs from 'fs';
 import * as ins from './installer';
 
@@ -202,46 +202,66 @@ export async function activate(context: ExtensionContext): Promise<void> {
   });
 
 
-  const commandAddImport = commands.registerCommand("dlang.addImport", async () => {
+  const commandAddImport = commands.registerCommand("code-d.addImport", async (name, location) => {
 
     const document = await workspace.document
     const position = await window.getCursorPosition();
     const range = document.getWordRangeAtPosition(position);
     const cursorPos = await window.getCursorScreenPosition();
-    const location = document.getOffset(cursorPos.row, cursorPos.col);
+    //const location = document.getOffset(cursorPos.row, cursorPos.col);
     //let currentWord = document.textDocument.getText(range);
-    window.showPrompt(`currentCursorPos: ${position.line}, currentLocation: ${location}`);
+    //window.showPrompt(`currentCursorPos: ${position.line}, currentLocation: ${location}`);
 
-    if (range && range.start.character < position.character) {
-      const word = document.textDocument.getText(range);
-      //currentWord = word;
-    }
+    //window.showPrompt(: location);
+    //if (range && range.start.character < position.character) {
+    //const word = document.textDocument.getText(range);
+    //currentWord = word;
+    //}
 
     const params = {
       textDocument: {
         uri: document.uri
       },
-      name: 'loadSDL',
-      location: position.line
+      name: name,
+      location: location
     };
 
     try {
-      client.sendRequest<ImportModification>('served/addImport', params).then((result: ImportModification) => {
-        if (result)
-        {
-          window.showMenuPicker(result.replacements.map(i=> i.content), 'add dependency').then(num => {
-            result.replacements[num].range;
-            window.moveTo({ line:  0, character:  0});
-          });
+      client.sendRequest<ImportModification>('served/addImport', params).then((change: ImportModification) => {
+
+        if (change.rename)
+          return;
+        let editations:TextEdit[] = [];
+
+        for (let i = change.replacements.length - 1; i >= 0; i--) {
+          let r = change.replacements[i];
+
+          if (r.range[0] === r.range[1])
+          {
+            editations.push(TextEdit.insert(r.range[0], r.content));
+          }
+          else if (r.content === "") {
+            const fromTo: Range = {
+              start: r.range[0],
+              end: r.range[1]
+            }
+            editations.push(TextEdit.del(fromTo));
+          }
+          else {
+            const fromTo: Range = {
+              start: r.range[0],
+              end: r.range[1]
+            }
+            editations.push(TextEdit.replace(fromTo, r.content));
+          }
+
         }
-        else
-          window.showPrompt('failed to request');
+        document.applyEdits(editations);
 
       });
 
     } catch (e) {
-      window.showPrompt('failed to request');
-      /* handle error */
+      window.showErrorMessage('Failed to request served/addImport');
     }
   });
 
