@@ -1,9 +1,10 @@
 import {window} from "coc.nvim";
 import {exec, ExecException} from 'child_process';
 
-export function downloadingLatestPrereleaseServeD() {
+export function downloadingLatestPrereleaseServeD(toPath: string) {
 	let file = 'linux-x86_64';
-	let outputPath = '~/.local/share/code-d/bin/';
+	//let outputPath = '~/.local/share/code-d/bin/';
+	let outputPath = toPath;
 	let extract = `tar -xf serve-d*.tar.xz`;
 	let cleanup = `rm serve-d*.tar.*`;
 	switch (process.platform) {
@@ -34,9 +35,10 @@ export function downloadingLatestPrereleaseServeD() {
 }
 
 
-export function downloadingLatestServeD() {
+export function downloadingLatestServeD(toPath: string) {
 	let file = 'linux-x86_64';
-	let outputPath = '~/.local/share/code-d/bin/';
+	//let outputPath = '~/.local/share/code-d/bin/';
+	let outputPath = toPath;
 	let extract = `tar -xf serve-d*.tar.xz`;
 	let cleanup = `rm serve-d*.tar.*`;
 	switch (process.platform) {
@@ -67,9 +69,10 @@ export function downloadingLatestServeD() {
 	window.showInformationMessage('done downloading serve-d, latest stable');
 }
 
-export function downloadingLatestDCD() {
+export function downloadingLatestDCD(toPath: string) {
 	let file = 'linux-x86_64';
-	let outputPath = '~/.local/share/code-d/bin/';
+	//let outputPath = '~/.local/share/code-d/bin/';
+	let outputPath = toPath;
 	let extract = `tar -xf dcd*.tar.gz`;
 	let cleanup = `rm dcd*.tar.*`;
 	switch (process.platform) {

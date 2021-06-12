@@ -1,5 +1,6 @@
-import { DialogConfig, WorkspaceConfiguration, TextEdit, window, workspace, ExtensionContext, services, LanguageClient, commands, TextDocument, Position, Thenable,TextDocumentIdentifier, NotificationType, Progress, CancellationToken, Range } from 'coc.nvim';
+import { DialogConfig, WorkspaceConfiguration, TextEdit, window, workspace, ExtensionContext, services, LanguageClient, commands, TextDocument, Position, Thenable,TextDocumentIdentifier, NotificationType, Progress, CancellationToken, Range, ConfigurationChangeEvent } from 'coc.nvim';
 import * as fs from 'fs';
+import * as path from 'path';
 import * as ins from './installer';
 
 
@@ -25,22 +26,6 @@ interface ImportModification
   replacements: CodeReplacement[];
 }
 
-//export function config(resource: string | null): WorkspaceConfiguration {
-//return workspace.getConfiguration("d", resource);
-//}
-
-
-
-function checkFileExistsSync(filepath){
-  let flag = true;
-  try{
-    fs.accessSync(filepath, fs.constants.F_OK);
-  }catch(e){
-    flag = false;
-  }
-  return flag;
-}
-
 export async function activate(context: ExtensionContext): Promise<void> {
   const config = workspace.getConfiguration('d');
   const isEnable = config.get<boolean>('enable', true);
@@ -48,7 +33,11 @@ export async function activate(context: ExtensionContext): Promise<void> {
     return;
   }
   const homedir = require('os').homedir();
-  const defaultPath = `${homedir}/.local/share/code-d/bin/serve-d`;
+  //const defaultPath = `${homedir}/.local/share/code-d/bin/serve-d`;
+
+  const extensionsFolder = path.join(homedir, '.config','coc', 'extensions', 'coc-dlang-data');
+  //const dcdServerPath = path.join(homedir, '.config','coc', 'extensions', 'coc-dlang-data', 'dcd-server');
+  const defaultPath = path.join(homedir, '.config','coc', 'extensions', 'coc-dlang-data', 'serve-d');
   //const clientPath = `${homedir}/.local/share/code-d/bin/dcd-client`;
   //const serverPath = `${homedir}/.local/share/code-d/bin/dcd-server`;
 
@@ -57,10 +46,10 @@ export async function activate(context: ExtensionContext): Promise<void> {
     //window.showInformationMessage('select serve-d version:' );
     window.showQuickpick(['pre-release', 'latest'], 'Select serve-d version').then(chosen => {
       if (chosen === 0) {
-        ins.downloadingLatestPrereleaseServeD();
+        ins.downloadingLatestPrereleaseServeD(extensionsFolder);
       }
       else {
-        ins.downloadingLatestServeD();
+        ins.downloadingLatestServeD(extensionsFolder);
       }
     });
     //ins.downloadingLatestPrereleaseServeD();
@@ -156,26 +145,26 @@ export async function activate(context: ExtensionContext): Promise<void> {
   });
 
   const commandDownloadDCD = commands.registerCommand("dlang.downloadDCD", async () => {
-    ins.downloadingLatestDCD();
+    ins.downloadingLatestDCD(extensionsFolder);
   });
 
   const commandDownloadServeD = commands.registerCommand("dlang.downloadLatestServeD", async () => {
-    ins.downloadingLatestServeD();
+    ins.downloadingLatestServeD(extensionsFolder);
   });
 
   const commandDownloadPrerelease = commands.registerCommand("dlang.downloadPreServeD", async () => {
-    ins.downloadingLatestPrereleaseServeD();
+    ins.downloadingLatestPrereleaseServeD(extensionsFolder);
   });
 
 
 
 
-  const commandImplementMethods = commands.registerCommand("code-d.implementMethods", async () => {
+  const commandImplementMethods = commands.registerCommand("code-d.implementMethods", async (location) => {
     const document = await workspace.document;
-    const position = await window.getCursorPosition();
-    const range = document.getWordRangeAtPosition(position);
-    const cursorPos = await window.getCursorScreenPosition();
-    const location = document.textDocument.offsetAt(position)
+    //const position = await window.getCursorPosition();
+    //const range = document.getWordRangeAtPosition(position);
+    //const cursorPos = await window.getCursorScreenPosition();
+    //const location = document.textDocument.offsetAt(position)
     //const location2 = document.getPosition(cursorPos.row, cursorPos.col);
     //let currentWord = document.textDocument.getText(range);
     let uri = document.uri;
@@ -205,9 +194,9 @@ export async function activate(context: ExtensionContext): Promise<void> {
   const commandAddImport = commands.registerCommand("code-d.addImport", async (name, location) => {
 
     const document = await workspace.document
-    const position = await window.getCursorPosition();
-    const range = document.getWordRangeAtPosition(position);
-    const cursorPos = await window.getCursorScreenPosition();
+    //const position = await window.getCursorPosition();
+    //const range = document.getWordRangeAtPosition(position);
+    //const cursorPos = await window.getCursorScreenPosition();
     //const location = document.getOffset(cursorPos.row, cursorPos.col);
     //let currentWord = document.textDocument.getText(range);
     //window.showPrompt(`currentCursorPos: ${position.line}, currentLocation: ${location}`);
@@ -266,7 +255,22 @@ export async function activate(context: ExtensionContext): Promise<void> {
   });
 
 
+  let onDidChangeConfigurationListener = workspace.onDidChangeConfiguration((e: ConfigurationChangeEvent) => {
+    const dcdServerPath = path.join(extensionsFolder, 'dcd-server');
+    const dcdClientPath = path.join(extensionsFolder, 'dcd-client');
+    const serverPath = path.join(extensionsFolder, 'serve-d');
+    client.sendNotification('workspace/didChangeConfiguration', {
+      settings: {
+        servedPath: serverPath,
+        dcdClientPath: dcdClientPath,
+        dcdServerPath: dcdServerPath
+      }
+    })
+  });
+
+
   context.subscriptions.push(commandlistArchTypes,
+    onDidChangeConfigurationListener,
     commandAddImport,
     commandDownloadServeD,
     commandDownloadDCD,
