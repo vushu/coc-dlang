@@ -12,6 +12,9 @@ nmap <silent> <leader>di :call CocActionAsync('runCommand', 'code-d.implementMet
 ```
 CocCommands
 ```
+//setup LanguageServer 
+:CocCommand dlang.setupLanguageServer 
+
 //Download pre-release of serve-d 
 :CocCommand dlang.downloadPreServeD 
 
