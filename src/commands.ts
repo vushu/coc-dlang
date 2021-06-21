@@ -67,8 +67,7 @@ export function registerCommands(context: ExtensionContext, client: LanguageClie
       return;
     }
 
-    notifyText(`location: ${location}, name: ${name}`);
-
+    //notifyText(`location: ${location}, name: ${name}`);
 
     const params = {
       textDocument: {
