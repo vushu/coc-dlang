@@ -1,6 +1,6 @@
 {
     "name": "coc-dlang",
-    "version": "1.0.17",
+    "version": "1.0.18",
     "description": "dlang support for coc",
     "author": "Dan Vu <danvu.hustle@gmail.com>",
     "license": "MIT",
@@ -59,7 +59,6 @@
                     "default": true,
                     "description": "Is dub project"
                 }
-
             }
         },
         "commands": [
