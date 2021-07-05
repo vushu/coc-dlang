@@ -4,8 +4,8 @@
 
 `:CocInstall coc-dlang`
 
-```
-CocCommands
+
+## CocCommands
 ```
 //setup LanguageServer 
 :CocCommand code-d.setupLanguageServer 
