@@ -4,11 +4,6 @@
 
 `:CocInstall coc-dlang`
 
-## Vim bindings 
-
-implement interface or methods
-```
-nmap <silent> <leader>di :call CocActionAsync('runCommand', 'code-d.implementMethods')<CR>
 ```
 CocCommands
 ```
