@@ -23,12 +23,22 @@
 
 ## Problem running
 ```
-//Run
-:CocConfig  
-remove d.servedPath  
-//restart nvim
-```
+UnhandledRejection: Launching server "coc-dlang" using command ... served-d failed.
 
+Typically this happens, when you have saved your coc-settings.json and using it on another machine.
+The path to served-d will then be incorrect.
+
+To solve:
+
+:CocConfig  
+remove d.servedPath
+restart nvim
+
+//It will re-create the correct path on startup.
+
+
+
+```
 ## License
 
 MIT
