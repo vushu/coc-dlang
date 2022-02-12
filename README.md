@@ -21,6 +21,14 @@
 
 ```
 
+## Problem running
+```
+//Run
+:CocConfig  
+remove d.servedPath  
+//restart nvim
+```
+
 ## License
 
 MIT
