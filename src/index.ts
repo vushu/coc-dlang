@@ -39,9 +39,10 @@ export async function activate(context: ExtensionContext): Promise<void> {
   if (!servedPath)
     return;
 
+
   // If path was not provided by the user and does not exist, download executable
   if (!fs.existsSync(servedPath)) {
-    installer.chooseInstallation(extensionsFolder);
+    servedPath = await installer.chooseInstallation(extensionsFolder);
   }
 
   //let args = ["--require", "D", "--lang", 'en', "--provide", "http", "--provide", "context-snippets"];
@@ -49,7 +50,9 @@ export async function activate(context: ExtensionContext): Promise<void> {
 
 
   const serverOptions = {
-    command: servedPath, // run serve-d
+    // servedPath is only undefined if an error occured when downloading
+    // If this happened, this error would have been reported to the user already
+    command: servedPath!, // run serve-d
     //args: args
 
     //arguments: [

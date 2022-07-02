@@ -1,13 +1,14 @@
 import {window} from "coc.nvim";
 import {exec, ExecException} from 'child_process';
+import util from "util";
+import path from "path";
 
-export function chooseInstallation(extensionsFolder: string)
-{
-  downloadingLatestServeD(extensionsFolder);
+export async function chooseInstallation(extensionsFolder: string): Promise<string | undefined> {
+  return downloadingLatestServeD(extensionsFolder);
 }
 
 
-export function downloadingLatestServeD(toPath: string) {
+export async function downloadingLatestServeD(toPath: string): Promise<string | undefined> {
   let file = 'linux-x86_64';
   //let outputPath = '~/.local/share/code-d/bin/';
   let outputPath = toPath;
@@ -28,14 +29,20 @@ export function downloadingLatestServeD(toPath: string) {
   }
 
   const commando = `curl -s https://api.github.com/repos/Pure-D/serve-d/releases/latest | grep browser_download_url | grep ${file} | cut -d '"' -f 4 | wget -qi - -P ${outputPath} && cd ${outputPath} && ${extract} && ${cleanup}`
-  //window.showPrompt('downloading serve-d');
-  exec(commando, (err: ExecException | null, stdout: string, stderr: string) => {
-    if (stderr)
-      window.showErrorMessage(stderr);
-    if (stdout)
-      window.showInformationMessage(stdout);
-    if (err)
-      window.showErrorMessage(err.message);
-    window.showNotification({content: 'done downloading serve-d, latest stable', timeout: 5000});
-  });
+
+  window.showNotification({content: 'serve-d download started', title: "coc-dlang", timeout: 5000});
+  const execPromise = util.promisify(exec);
+  return execPromise(commando)
+    .then(
+      ({stderr, stdout}) => {
+        if (stderr)
+          window.showErrorMessage(stderr);
+        if (stdout)
+          window.showInformationMessage(stdout);
+        window.showNotification({content: 'serve-d download finished', title: "coc-dlang", timeout: 5000});
+        return path.join(outputPath, "serve-d");
+      }
+    ).catch(err =>
+      window.showErrorMessage(err.message)
+    );
 }
