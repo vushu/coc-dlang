@@ -5,18 +5,23 @@ import * as installer from './installer';
 import { registerCommands } from './commands';
 import { registerNotifications } from './notifications';
 
-function getStorageValue(storage: Memento,key:string, defaultValue: string): string {
-  let storageValue = storage.get<string>(key, '');
-  if (storageValue === '') {
-    storage.update(key, defaultValue);
-    storageValue = defaultValue;
-  }
-  return storageValue;
 
+function getPath(config: WorkspaceConfiguration, key: string, defaultPath: string): string | undefined {
+  const userPath = config.get<string>(key);
+  if (!userPath)
+    return defaultPath;
+
+  if (fs.existsSync(userPath)) {
+    const stat = fs.statSync(userPath);
+    if (stat.isFile() && (stat.mode & 0o010))
+      return userPath; // If path exists and is a file and is executable
+  }
+
+  window.showErrorMessage(`found user provided ${key}, but no executable was found`);
+  return undefined;
 }
 
 export async function activate(context: ExtensionContext): Promise<void> {
-  const storage = context.globalState;
   const config = workspace.getConfiguration('d');
   const isEnable = config.get<boolean>('enable', true);
   if (!isEnable) {
@@ -24,13 +29,18 @@ export async function activate(context: ExtensionContext): Promise<void> {
   }
   const homedir = require('os').homedir();
 
-  const extensionsFolder = path.join(homedir, '.config','coc', 'extensions', 'coc-dlang-data');
+  const extensionsFolder = path.join(homedir, '.config', 'coc', 'extensions', 'coc-dlang-data');
   const defaultServedPath = path.join(extensionsFolder, 'serve-d');
 
 
-  let servedPath = getStorageValue(storage, 'servedPath', defaultServedPath);
+  let servedPath = getPath(config, 'servedPath', defaultServedPath);
 
-  if (!fs.existsSync(defaultServedPath)) {
+  // If path was provided by the user, but did not exist, exit
+  if (!servedPath)
+    return;
+
+  // If path was not provided by the user and does not exist, download executable
+  if (!fs.existsSync(servedPath)) {
     installer.chooseInstallation(extensionsFolder);
   }
 
@@ -60,30 +70,11 @@ export async function activate(context: ExtensionContext): Promise<void> {
 
   client.onReady().then(()=> {
 
-    registerNotifications(client, storage);
+    registerNotifications(client);
     //window.showMessage('served-d ready');
 
   });
 
-  let onDidChangeConfigurationListener = workspace.onDidChangeConfiguration((e: ConfigurationChangeEvent) => {
-    const dcdServerPath = getStorageValue(storage, 'dcdServerPath', path.join(extensionsFolder, 'dcd-server'));
-    const dcdClientPath = getStorageValue(storage, 'dcdClientPath', path.join(extensionsFolder, 'dcd-client'));
-
-    const serverPath = path.join(extensionsFolder, 'serve-d');
-    client.sendNotification('workspace/didChangeConfiguration', {
-      settings: {
-        d:{
-          servedPath: serverPath,
-          dcdClientPath: dcdClientPath,
-          dcdServerPath: dcdServerPath
-          //hasDubProject: true
-        }
-      }
-    })
-  });
-
   registerCommands(context, client, extensionsFolder)
-
-  context.subscriptions.push(onDidChangeConfigurationListener, services.registLanguageClient(client));
-
+  context.subscriptions.push(services.registLanguageClient(client));
 }
