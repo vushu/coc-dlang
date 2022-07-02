@@ -1,21 +1,22 @@
-import { DialogConfig, WorkspaceConfiguration, TextEdit, window, workspace, ExtensionContext, services, LanguageClient, commands, TextDocument, Position, Thenable,TextDocumentIdentifier, NotificationType, Progress, CancellationToken, Range, ConfigurationChangeEvent } from 'coc.nvim';
+import { DialogConfig, WorkspaceConfiguration, TextEdit, window, workspace, ExtensionContext, services, LanguageClient, commands, TextDocument, Position, Thenable,TextDocumentIdentifier, NotificationType, Progress, CancellationToken, Range, ConfigurationChangeEvent, Memento } from 'coc.nvim';
 import * as fs from 'fs';
 import * as path from 'path';
 import * as installer from './installer';
 import { registerCommands } from './commands';
 import { registerNotifications } from './notifications';
 
-function getConfigValue(config: WorkspaceConfiguration,key:string, defaultValue: string): string {
-  let configValue = config.get<string>(key, '');
-  if (configValue === '') {
-    config.update(key, defaultValue, true);
-    configValue = defaultValue;
+function getStorageValue(storage: Memento,key:string, defaultValue: string): string {
+  let storageValue = storage.get<string>(key, '');
+  if (storageValue === '') {
+    storage.update(key, defaultValue);
+    storageValue = defaultValue;
   }
-  return configValue;
+  return storageValue;
 
 }
 
 export async function activate(context: ExtensionContext): Promise<void> {
+  const storage = context.globalState;
   const config = workspace.getConfiguration('d');
   const isEnable = config.get<boolean>('enable', true);
   if (!isEnable) {
@@ -27,7 +28,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
   const defaultServedPath = path.join(extensionsFolder, 'serve-d');
 
 
-  let servedPath = getConfigValue(config, 'servedPath', defaultServedPath);
+  let servedPath = getStorageValue(storage, 'servedPath', defaultServedPath);
 
   if (!fs.existsSync(defaultServedPath)) {
     installer.chooseInstallation(extensionsFolder);
@@ -59,14 +60,14 @@ export async function activate(context: ExtensionContext): Promise<void> {
 
   client.onReady().then(()=> {
 
-    registerNotifications(client, config);
+    registerNotifications(client, storage);
     //window.showMessage('served-d ready');
 
   });
 
   let onDidChangeConfigurationListener = workspace.onDidChangeConfiguration((e: ConfigurationChangeEvent) => {
-    const dcdServerPath = getConfigValue(config, 'dcdServerPath', path.join(extensionsFolder, 'dcd-server'));
-    const dcdClientPath = getConfigValue(config, 'dcdClientPath', path.join(extensionsFolder, 'dcd-client'));
+    const dcdServerPath = getStorageValue(storage, 'dcdServerPath', path.join(extensionsFolder, 'dcd-server'));
+    const dcdClientPath = getStorageValue(storage, 'dcdClientPath', path.join(extensionsFolder, 'dcd-client'));
 
     const serverPath = path.join(extensionsFolder, 'serve-d');
     client.sendNotification('workspace/didChangeConfiguration', {

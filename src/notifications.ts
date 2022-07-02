@@ -1,5 +1,5 @@
-import { WorkspaceConfiguration, LanguageClient, NotificationType, window, workspace, commands } from 'coc.nvim';
-export function registerNotifications(client: LanguageClient, config: WorkspaceConfiguration) {
+import { Memento, LanguageClient, NotificationType, window, workspace, commands } from 'coc.nvim';
+export function registerNotifications(client: LanguageClient, storage: Memento) {
 
   var workspaceConfiguration = new NotificationType<{ settings: any }, void>("workspace/didChange");
   client.onNotification(workspaceConfiguration, (arg: { settings: any }) => {
@@ -10,7 +10,7 @@ export function registerNotifications(client: LanguageClient, config: WorkspaceC
   client.onNotification(updateSetting, (arg: { section: string, value: any, global: boolean }) => {
 
     //window.showPrompt('section: '+ arg.section + ' path: ' + arg.value);
-    config.update(arg.section, arg.value, arg.global);
+    storage.update(arg.section, arg.value);
   });
 
 
