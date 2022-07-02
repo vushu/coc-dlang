@@ -23,16 +23,8 @@ export function registerCommands(context: ExtensionContext, client: LanguageClie
     installer.chooseInstallation(extensionsFolder);
   });
 
-  const commandDownloadDCD = commands.registerCommand(`${prefix}downloadDCD`, async () => {
-    installer.downloadingLatestDCD(extensionsFolder);
-  });
-
   const commandDownloadServeD = commands.registerCommand(`${prefix}downloadLatestServeD`, async () => {
     installer.downloadingLatestServeD(extensionsFolder);
-  });
-
-  const commandDownloadPrerelease = commands.registerCommand(`${prefix}downloadPreServeD`, async () => {
-    installer.downloadingLatestPrereleaseServeD(extensionsFolder);
   });
 
 
@@ -193,9 +185,6 @@ export function registerCommands(context: ExtensionContext, client: LanguageClie
     commandListConfiguration,
     commandAddImport,
     commandImplementMethods,
-    commandDownloadPrerelease,
     commandDownloadServeD,
-    commandDownloadDCD,
     commandSetupLanguageServer);
-
 }
