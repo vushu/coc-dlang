@@ -4,45 +4,24 @@
 
 `:CocInstall coc-dlang`
 
-
 ## CocCommands
-```
-//setup LanguageServer 
-:CocCommand code-d.setupLanguageServer 
 
-//Download pre-release of serve-d 
-:CocCommand code-d.downloadPreServeD 
+| Command                       | Note                                                                                            |
+|-------------------------------|-------------------------------------------------------------------------------------------------|
+| `code-d.setupLanguageServer`  | Download serve-d. Will download the executable even if it is overridden in `coc-settings.json`. |
+| `code-d.downloadLatestServeD` | Same as above. Kept for backwards compatibility.                                                |
+| `code-d.implementMethods`     | Run serve-d `implementMethods`                                                                  |
+| `code-d.addImport`            | Run serve-d `addImport`                                                                         |
+| `code-d.ignoreDscannerKey`    | Reserved for future use.                                                                        |
+| `code-d.listArchTypes`        | List serve-d archtypes.                                                                         |
+| `code-d.listConfigurations`   | List serve-d configurations.                                                                    |
+| `code-d.getConfig`            | Get current serve-d configuration.                                                              |
+| `code-d.getBuildType`         | Get current serve-d build type.                                                                 |
+| `code-d.getCompiler`          | Get current compiler.                                                                           |
+| `code-d.updateImports`        | Run serve-d `updateImports`.                                                                    |
+| `code-d.switchCompiler`       | Use a different compiler.                                                                       |
+| `code-d.listDependencies`     | List current dependencies.                                                                      |
 
-//Download latest stable of serve-d 
-:CocCommand code-d.downloadLatestServeD 
-
-//Download latest stable of dcd 
-:CocCommand code-d.downloadDCD 
-
-```
-
-## Problem running
-```
-UnhandledRejection: Launching server "coc-dlang" using command ... served-d failed.
-
-Typically this happens, when you have saved your coc-settings.json and using it on another machine.
-The path to served-d will then be incorrect.
-
-To solve:
-
-:CocConfig  
-remove d.servedPath
-restart nvim
-
-//It will re-create the correct path on startup.
-
-
-
-```
 ## License
 
 MIT
-
----
-
-> This extension is built with [create-coc-extension](https://github.com/fannheyward/create-coc-extension)
