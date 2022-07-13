@@ -9,7 +9,7 @@ const latestServedUrl = "https://api.github.com/repos/Pure-D/serve-d/releases/la
 function createDownloadConfig(toPath: string, remoteFilename: string) {
   let file = 'linux-x86_64';
   let outputPath = toPath;
-  let extractCommand = `tar -xf ${remoteFilename}*.tar.gz`;
+  let extractCommand = `tar -xf ${remoteFilename}*.tar.*`;
   let cleanupCommand = `rm ${remoteFilename}*.tar.*`;
 
   switch (process.platform) {
