@@ -42,7 +42,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
 
   // If path was not provided by the user and does not exist, download executable
   if (!fs.existsSync(servedPath)) {
-    servedPath = await installer.chooseInstallation(extensionsFolder);
+    servedPath = await installer.installLanguageServer(extensionsFolder);
   }
 
   //let args = ["--require", "D", "--lang", 'en', "--provide", "http", "--provide", "context-snippets"];
