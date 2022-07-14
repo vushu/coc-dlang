@@ -4,8 +4,6 @@ import * as installer from './installer';
 
 
 const prefix = 'code-d.';
-const latestDCDUrl = "https://api.github.com/repos/dlang-community/DCD/releases/latest";
-const latestServedUrl = "https://api.github.com/repos/Pure-D/serve-d/releases/latest";
 
 function printImports(change) : void{
   for (let i = change.replacements.length - 1; i >= 0; i--)
@@ -26,11 +24,15 @@ export function registerCommands(context: ExtensionContext, client: LanguageClie
   });
 
   const commandDownloadDCD = commands.registerCommand(`${prefix}downloadDCD`, async () => {
-    installer.downloadFromGithub("dcd", latestDCDUrl, extensionsFolder);
+    installer.downloadDCD();
+  });
+
+  const commandBuildServedFromSource = commands.registerCommand(`${prefix}buildServedFromRepository`, async () => {
+    window.withProgress({ cancellable: false, title: 'Building serve-d from repository' }, installer.buildFromRepository);
   });
 
   const commandDownloadServeD = commands.registerCommand(`${prefix}downloadLatestServeD`, async () => {
-    installer.downloadFromGithub("serve-d", latestServedUrl, extensionsFolder);
+    installer.downloadServed();
   });
 
 
@@ -64,8 +66,6 @@ export function registerCommands(context: ExtensionContext, client: LanguageClie
       window.showInformationMessage('Nothing to import');
       return;
     }
-
-    //notifyText(`location: ${location}, name: ${name}`);
 
     const params = {
       textDocument: {
@@ -192,6 +192,7 @@ export function registerCommands(context: ExtensionContext, client: LanguageClie
     commandAddImport,
     commandImplementMethods,
     commandDownloadDCD,
+    commandBuildServedFromSource,
     commandDownloadServeD,
     commandSetupLanguageServer);
 }
