@@ -11,9 +11,9 @@
 | `code-d.setupLanguageServer`        | Download serve-d. Will download the executable even if it is overridden in `coc-settings.json`. |
 | `code-d.downloadServeD`             | Download latest serve-d release.                                                                |
 | `code-d.downloadDCD`                | Download latest DCD from release.                                                               |
-| `code-d.buildServeDFromRepository`  | Download latest DCD from release.                                                               |
-| `code-d.implementMethods`           | Run serve-d `implementMethods`                                                                  |
-| `code-d.addImport`                  | Run serve-d `addImport`                                                                         |
+| `code-d.buildServeDFromRepository`  | Build serve-d from repository.                                                                  |
+| `code-d.implementMethods`           | Run serve-d `implementMethods`.                                                                 |
+| `code-d.addImport`                  | Run serve-d `addImport`.                                                                        |
 | `code-d.ignoreDscannerKey`          | Reserved for future use.                                                                        |
 | `code-d.listArchTypes`              | List serve-d archtypes.                                                                         |
 | `code-d.listConfigurations`         | List serve-d configurations.                                                                    |
