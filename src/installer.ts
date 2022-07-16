@@ -115,7 +115,7 @@ async function buildServed(): Promise<boolean | undefined> {
   const commando = `dub build --root=${pathToServedBuildFolder} --build=release`
   const execPromise = util.promisify(exec);
 
-  window.showNotification({ content: 'This will take a while...', title: "Please wait", timeout: 5000 })
+  window.showNotification({ content: 'This will take a while...', title: "Please wait", timeout: 7000 })
   let success = false;;
   await execPromise(commando)
     .then(
@@ -135,7 +135,7 @@ async function moveServed(): Promise<boolean | undefined> {
   const commando = `mv ${pathToServedBuildExecutable} ${servedDestination} && rm -rf ${pathToServedBuildFolder}`;
   const execPromise = util.promisify(exec);
   return execPromise(commando).then(() => {
-    window.showNotification({ content: 'Sucessfully using serve-d from repository', title: "Completed", timeout: 1000 })
+    window.showNotification({ content: 'Sucessfully using serve-d from repository, please restart vim', title: "Completed", timeout: 3000 })
     return true;
   });
   return false;
