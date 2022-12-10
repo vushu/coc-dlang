@@ -1,6 +1,7 @@
 
 import { TextEdit, window, workspace, ExtensionContext, LanguageClient, commands, Range } from 'coc.nvim';
 import * as installer from './installer';
+import { version } from '../package.json';
 
 
 const prefix = 'code-d.';
@@ -175,6 +176,11 @@ export function registerCommands(context: ExtensionContext, client: LanguageClie
     });
   });
 
+  const commandShowVersion = commands.registerCommand(`${prefix}showVersion`, async () => {
+    window.showInformationMessage("coc-dlang: " + version );
+  });
+
+
   //Register to extensions context
   context.subscriptions.push(commandIgnoreDscannerKey,
     commandListDependencies,
@@ -190,5 +196,7 @@ export function registerCommands(context: ExtensionContext, client: LanguageClie
     commandDownloadDCD,
     commandBuildServedFromSource,
     commandDownloadServeD,
-    commandSetupLanguageServer);
+    commandSetupLanguageServer,
+    commandShowVersion
+  );
 }

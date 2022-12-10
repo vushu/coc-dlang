@@ -1,4 +1,4 @@
-import { DialogConfig, WorkspaceConfiguration, TextEdit, window, workspace, ExtensionContext, services, LanguageClient, commands, TextDocument, Position, Thenable,TextDocumentIdentifier, NotificationType, Progress, CancellationToken, Range, ConfigurationChangeEvent, Memento } from 'coc.nvim';
+import { DialogConfig, WorkspaceConfiguration, TextEdit, window, workspace, ExtensionContext, services, LanguageClient, commands, TextDocument, Position, Thenable, TextDocumentIdentifier, NotificationType, Progress, CancellationToken, Range, ConfigurationChangeEvent, Memento } from 'coc.nvim';
 import * as fs from 'fs';
 import * as path from 'path';
 import * as installer from './installer';
@@ -42,7 +42,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
 
   // If path was not provided by the user and does not exist, download executable
   if (!fs.existsSync(servedPath)) {
-    servedPath = await installer.installLanguageServer(extensionsFolder);
+    await installer.installLanguageServer(extensionsFolder);
   }
 
   //let args = ["--require", "D", "--lang", 'en', "--provide", "http", "--provide", "context-snippets"];
@@ -56,13 +56,13 @@ export async function activate(context: ExtensionContext): Promise<void> {
     //args: args
 
     //arguments: [
-      //'--require', 'd']
-      //'--lang', 'en',
-      //'--provide', 'http']
-      //'--provide', 'context-snippets']
+    //'--require', 'd']
+    //'--lang', 'en',
+    //'--provide', 'http']
+    //'--provide', 'context-snippets']
   };
   const clientOptions = {
-    documentSelector: ['d','dub.json', 'dub.sdl'], // run serve-d on d files
+    documentSelector: ['d', 'dub.json', 'dub.sdl'], // run serve-d on d files
   };
   const client = new LanguageClient(
     'coc-dlang', // the id
@@ -71,7 +71,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
     clientOptions,
   );
 
-  client.onReady().then(()=> {
+  client.onReady().then(() => {
 
     registerNotifications(client);
     //window.showMessage('served-d ready');
@@ -79,5 +79,5 @@ export async function activate(context: ExtensionContext): Promise<void> {
   });
 
   registerCommands(context, client, extensionsFolder)
-  context.subscriptions.push(services.registLanguageClient(client));
+  context.subscriptions.push(services.registerLanguageClient(client));
 }
