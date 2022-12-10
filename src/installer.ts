@@ -65,7 +65,7 @@ async function downloadFromGithub(remoteFileName: string, url: string): Promise<
   const downloadConfig = createDownloadConfig(remoteFileName);
 
   const commando = `curl -s ${url} | grep browser_download_url | grep ${downloadConfig.file} | cut -d '"' -f 4 | wget -qi - -P ${downloadConfig.outputPath} && cd ${downloadConfig.outputPath} && ${downloadConfig.extractCommand} && ${downloadConfig.cleanupCommand}`
-  window.showNotification({ content: `${remoteFileName} download started`, title: "coc-dlang", timeout: 1000 });
+  window.showNotification({ content: `${remoteFileName} download started`, title: "coc-dlang" });
   const execPromise = util.promisify(exec);
   return execPromise(commando)
     .then(
@@ -74,7 +74,7 @@ async function downloadFromGithub(remoteFileName: string, url: string): Promise<
           window.showErrorMessage(stderr);
         if (stdout)
           window.showInformationMessage(stdout);
-        window.showNotification({ content: `${remoteFileName} download finished`, title: "coc-dlang", timeout: 1000 });
+        window.showNotification({ content: `${remoteFileName} download finished`, title: "coc-dlang" });
         return path.join(downloadConfig.outputPath, remoteFileName);
       }
     ).catch(err =>
@@ -115,12 +115,12 @@ async function buildServed(): Promise<boolean | undefined> {
   const commando = `dub build --root=${pathToServedBuildFolder} --build=release`
   const execPromise = util.promisify(exec);
 
-  window.showNotification({ content: 'This will take a while...', title: "Please wait", timeout: 7000 })
-  let success = false;;
+  window.showNotification({ content: 'This will take a while...', title: "Please wait" })
+  let success = false;
   await execPromise(commando)
     .then(
       () => {
-        window.showNotification({ content: `Serve-d finished compiling`, title: "", timeout: 1000 });
+        window.showNotification({ content: `Serve-d finished compiling`, title: "" });
         success = true;
       }
     );
@@ -135,7 +135,7 @@ async function moveServed(): Promise<boolean | undefined> {
   const commando = `mv ${pathToServedBuildExecutable} ${servedDestination} && rm -rf ${pathToServedBuildFolder}`;
   const execPromise = util.promisify(exec);
   return execPromise(commando).then(() => {
-    window.showNotification({ content: 'Sucessfully using serve-d from repository, please restart vim', title: "Completed", timeout: 3000 })
+    window.showNotification({ content: 'Sucessfully using serve-d from repository, please restart vim', title: "Completed" })
     return true;
   });
   return false;

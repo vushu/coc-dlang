@@ -28,12 +28,12 @@
         "semi": true
     },
     "devDependencies": {
-        "@types/node": "^15.12.1",
-        "@typescript-eslint/eslint-plugin": "^4.8.2",
-        "@typescript-eslint/parser": "^4.8.2",
-        "coc.nvim": "^0.0.80",
-        "esbuild": "^0.8.42",
-        "eslint": "^7.14.0",
+        "@types/node": "^18.11.13",
+        "@typescript-eslint/eslint-plugin": "^5.46.0",
+        "@typescript-eslint/parser": "^5.46.0",
+        "coc.nvim": "^0.0.83-next.9",
+        "esbuild": "^0.16.4",
+        "eslint": "^8.29.0",
         "rimraf": "^3.0.2",
         "typescript": "^4.1.2"
     },
