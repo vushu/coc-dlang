@@ -89,7 +89,6 @@ export async function buildFromRepository(data): Promise<boolean | undefined> {
   let cleanupCommand = `rm ${filename}.zip`;
   let extractCommand = `unzip -qq ${filename}.zip`;
   const commando = `${deleteOldFileIfExists} && ${deleteOldDirectoryIfExists} && wget --content-disposition --quiet ${serveDSourceCodeUrl} -P ${extensionsFolder} && cd ${extensionsFolder} && ${extractCommand} && ${cleanupCommand}`;
-  // window.showNotification({ content: `Serve-d source code download started`, title: "coc-dlang", timeout: 1000 });
   const execPromise = util.promisify(exec);
   let success = false;
 

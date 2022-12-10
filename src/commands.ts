@@ -8,12 +8,12 @@ const prefix = 'code-d.';
 function printImports(change): void {
   for (let i = change.replacements.length - 1; i >= 0; i--) {
     let r = change.replacements[i];
-    window.showNotification({ content: 'added: ' + r.content, timeout: 10000 });
+    window.showNotification({ content: 'added: ' + r.content });
   }
 }
 
 function notifyText(text): void {
-  window.showNotification({ content: text, timeout: 10000 });
+  window.showNotification({ content: text });
 }
 
 export function registerCommands(context: ExtensionContext, client: LanguageClient, extensionsFolder: string) {
@@ -84,7 +84,6 @@ export function registerCommands(context: ExtensionContext, client: LanguageClie
 
         for (let i = change.replacements.length - 1; i >= 0; i--) {
           let r = change.replacements[i];
-          //window.showNotification({ content: 'added: ' + r.content, timeout: 10000 });
 
           if (r.range[0] === r.range[1]) {
             editations.push(TextEdit.insert(r.range[0], r.content));
@@ -171,7 +170,7 @@ export function registerCommands(context: ExtensionContext, client: LanguageClie
     client.sendRequest<any[]>('served/listDependencies').then((deps: any[]) => {
 
       deps.forEach((dep: any) => {
-        window.showNotification({ content: dep.name + ' path: ' + dep.path, timeout: 5000 })
+        window.showNotification({ content: dep.name + ' path: ' + dep.path })
       })
     });
   });
