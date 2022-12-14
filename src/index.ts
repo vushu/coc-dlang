@@ -5,6 +5,67 @@ import * as installer from './installer';
 import { registerCommands } from './commands';
 import { registerNotifications } from './notifications';
 
+function defaultConfig() {
+  return {
+    d: {
+      stdlibPath: "auto", // can be an array
+      dubPath: "dub",
+      dmdPath: "dmd",
+      enableLinting: true,
+      enableSDLLinting: true,
+      enableStaticLinting: true,
+      enableDubLinting: true,
+      enableAutoComplete: true,
+      enableFormatting: true,
+      enableDMDImportTiming: false,
+      enableCoverageDecoration: false, // upstream true, Nova can't
+      enableGCProfilerDecorations: false, // upstream true, Nova can't
+      neverUseDub: false,
+      projectImportPaths: [], // string array
+      dubConfiguration: "",
+      dubArchType: "",
+      dubBuildType: "",
+      dubCompiler: "",
+      overrideDfmtEditorconfig: true, // we might want to revisit this!
+      aggressiveUpdate: false, // differs from default code-d settings on purpose!
+      argumentSnippets: false,
+      scanAllFolders: true,
+      disabledRootGlobs: [], // string array
+      extraRoots: [], // string array
+      manyProjectsAction: "ask", // see  = ManyProjectsAction.ask;
+      manyProjectsThreshold: 6,
+      lintOnFileOpen: "project",
+      dietContextCompletion: false,
+      generateModuleNames: true,
+    },
+    dfmt: {
+      alignSwitchStatements: true,
+      braceStyle: "allman",
+      outdentAttributes: true,
+      spaceAfterCast: true,
+      splitOperatorAtLineEnd: false,
+      selectiveImportSpace: true,
+      compactLabeledStatements: true,
+      templateConstraintStyle: "conditional_newline_indent",
+      spaceBeforeFunctionParameters: false,
+      singleTemplateConstraintIndent: false,
+      spaceBeforeAAColon: false,
+      keepLineBreaks: true,
+      singleIndent: true,
+    },
+    dscanner: {
+      ignoredKeys: [], // string array
+    },
+    editor: {
+      rulers: [], // array of integers
+      tabSize: 4, // for now
+    },
+    git: {
+      git: "git", // path
+    },
+  };
+}
+
 
 function getPath(config: WorkspaceConfiguration, key: string, defaultPath: string): string | undefined {
   const userPath = config.get<string>(key);
@@ -47,23 +108,29 @@ export async function activate(context: ExtensionContext): Promise<void> {
 
   //let args = ["--require", "D", "--lang", 'en', "--provide", "http", "--provide", "context-snippets"];
   //let args = ['--require', 'D'];
+  let defaultArgs = ["--provide", "context-snippets", "--provide", "default-snippets"];
+  let debugArgs = ["--loglevel", "trace", "--logfile", "/tmp/served_log"];
+
 
 
   const serverOptions = {
     // servedPath is only undefined if an error occured when downloading
     // If this happened, this error would have been reported to the user already
     command: servedPath!, // run serve-d
-    //args: args
+    args: defaultArgs.concat(debugArgs),
 
-    //arguments: [
-    //'--require', 'd']
-    //'--lang', 'en',
-    //'--provide', 'http']
-    //'--provide', 'context-snippets']
   };
   const clientOptions = {
+
     documentSelector: ['d', 'dub.json', 'dub.sdl'], // run serve-d on d files
+    initializationOptions: {
+      nonStandardConfiguration: true,
+      startupConfiguration: defaultConfig(),
+    },
+
+
   };
+
   const client = new LanguageClient(
     'coc-dlang', // the id
     'serve-d', // the name of the language server
@@ -72,12 +139,15 @@ export async function activate(context: ExtensionContext): Promise<void> {
   );
 
   client.onReady().then(() => {
-
     registerNotifications(client);
-    //window.showMessage('served-d ready');
+    registerCommands(context, client, extensionsFolder)
 
+    // client.sendNotification("served/didChangeConfiguration", { settings: defaultConfig() });
+
+    // client.sendRequest("served/getInfo").then((status: any) => {
+    //   window.showNotification({ content: 'Serve-d version: ' + status?.serverInfo?.version });
+    // })
   });
 
-  registerCommands(context, client, extensionsFolder)
   context.subscriptions.push(services.registerLanguageClient(client));
 }

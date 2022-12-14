@@ -1,14 +1,22 @@
 import { Memento, LanguageClient, NotificationType, window, workspace, commands } from 'coc.nvim';
 export function registerNotifications(client: LanguageClient) {
 
-  var workspaceConfiguration = new NotificationType<{ settings: any }>("workspace/didChange");
-  client.onNotification(workspaceConfiguration, (arg: { settings: any }) => {
+  var workspaceDidChange = new NotificationType<{ settings: any }>("served/didChange");
+  client.onNotification(workspaceDidChange, (arg: { settings: any }) => {
     window.showPrompt('didChange says hello');
+  });
+
+ var workspaceConfiguration = new NotificationType<{ settings: any }>("workspace/didChangeConfiguration");
+  client.onNotification(workspaceConfiguration, (arg: { settings: any }) => {
+    window.showNotification({ content: 'didChangeConfiguration!' });
+  });
+  var nonStandardDidChangeConfiguration = new NotificationType<{ settings: any }>("served/didChangeConfiguration");
+  client.onNotification(nonStandardDidChangeConfiguration, (arg: { settings: any }) => {
+    window.showNotification({ content: 'nonStandardDidChangeConfiguration!' });
   });
 
   let notificationLogInstall = new NotificationType<string>('coded/logInstall');
   client.onNotification(notificationLogInstall, (message: string) => {
-
     window.showNotification({ content: message });
   });
 
