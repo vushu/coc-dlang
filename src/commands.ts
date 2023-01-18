@@ -189,7 +189,6 @@ export function registerCommands(context: ExtensionContext, client: LanguageClie
     commandListConfiguration,
     commandAddImport,
     commandImplementMethods,
-    commandDownloadDCD,
     commandBuildServedFromSource,
     commandDownloadServeD,
     commandSetupLanguageServer,
