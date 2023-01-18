@@ -1,4 +1,4 @@
-import { DialogConfig, WorkspaceConfiguration, TextEdit, window, workspace, ExtensionContext, services, LanguageClient, commands, TextDocument, Position, Thenable, TextDocumentIdentifier, NotificationType, Progress, CancellationToken, Range, ConfigurationChangeEvent, Memento } from 'coc.nvim';
+import { WorkspaceConfiguration, window, workspace, ExtensionContext, services, LanguageClient } from 'coc.nvim';
 import * as fs from 'fs';
 import * as path from 'path';
 import * as installer from './installer';
@@ -45,22 +45,12 @@ export async function activate(context: ExtensionContext): Promise<void> {
     await installer.installLanguageServer(extensionsFolder);
   }
 
-  //let args = ["--require", "D", "--lang", 'en', "--provide", "http", "--provide", "context-snippets"];
-  //let args = ['--require', 'D'];
-
-
   const serverOptions = {
     // servedPath is only undefined if an error occured when downloading
     // If this happened, this error would have been reported to the user already
     command: servedPath!, // run serve-d
-    //args: args
-
-    //arguments: [
-    //'--require', 'd']
-    //'--lang', 'en',
-    //'--provide', 'http']
-    //'--provide', 'context-snippets']
   };
+
   const clientOptions = {
     documentSelector: ['d', 'dub.json', 'dub.sdl'], // run serve-d on d files
   };
@@ -72,10 +62,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
   );
 
   client.onReady().then(() => {
-
     registerNotifications(client);
-    //window.showMessage('served-d ready');
-
   });
 
   registerCommands(context, client, extensionsFolder)

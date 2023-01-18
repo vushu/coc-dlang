@@ -1,11 +1,10 @@
 import { window } from "coc.nvim";
 import { exec } from 'child_process';
 import util from "util";
-import path, { resolve } from "path";
+import path from "path";
 
 const homedir = require('os').homedir();
 const extensionsFolder = path.join(homedir, '.config', 'coc', 'extensions', 'coc-dlang-data');
-const latestDCDUrl = "https://api.github.com/repos/dlang-community/DCD/releases/latest";
 const latestServedUrl = "https://api.github.com/repos/Pure-D/serve-d/releases/latest";
 const serveDSourceCodeUrl = "https://github.com/Pure-D/serve-d/archive/refs/heads/master.zip"
 const filename = 'serve-d-master'
@@ -39,21 +38,13 @@ function createDownloadConfig(remoteFilename: string) {
 export async function installLanguageServer(extensionsFolder: string): Promise<void | undefined> {
   window.showQuickpick(['use latest release', 'build directly from repository'], 'Select serve-d version').then(chosen => {
     if (chosen === 0) {
-      downloadDCD();
       downloadServed();
-
     }
     else {
       // serve-d doesn't download to extensionFolder so we do this manually
-      downloadDCD();
       window.withProgress({ cancellable: false, title: 'Building serve-d from repository' }, buildFromRepository);
     }
   });
-}
-
-
-export async function downloadDCD(): Promise<string | undefined> {
-  return downloadFromGithub("dcd", latestDCDUrl);
 }
 
 export async function downloadServed(): Promise<string | undefined> {
@@ -137,6 +128,4 @@ async function moveServed(): Promise<boolean | undefined> {
     window.showNotification({ content: 'Sucessfully using serve-d from repository, please restart vim', title: "Completed" })
     return true;
   });
-  return false;
-
 }

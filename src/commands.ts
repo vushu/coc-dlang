@@ -23,10 +23,6 @@ export function registerCommands(context: ExtensionContext, client: LanguageClie
     installer.installLanguageServer(extensionsFolder);
   });
 
-  const commandDownloadDCD = commands.registerCommand(`${prefix}downloadDCD`, async () => {
-    installer.downloadDCD();
-  });
-
   const commandBuildServedFromSource = commands.registerCommand(`${prefix}buildServeDFromRepository`, async () => {
     window.withProgress({ cancellable: false, title: 'Building serve-d from repository' }, installer.buildFromRepository);
   });
