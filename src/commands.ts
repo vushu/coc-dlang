@@ -27,9 +27,15 @@ export function registerCommands(context: ExtensionContext, client: LanguageClie
     window.withProgress({ cancellable: false, title: 'Building serve-d from repository' }, installer.buildFromRepository);
   });
 
-  const commandDownloadServeD = commands.registerCommand(`${prefix}downloadServeD`, async () => {
-    installer.downloadServed();
+  const commandDownloadStableServeD = commands.registerCommand(`${prefix}downloadStableServeD`, async () => {
+    installer.downloadLastestStable();
   });
+
+  const commandDownloadPrereleaseServeD = commands.registerCommand(`${prefix}downloadPrereleaseServeD`, async () => {
+    installer.downloadPrereleaseServed();
+  });
+
+
 
 
   const commandImplementMethods = commands.registerCommand(`${prefix}implementMethods`, async (location) => {
@@ -173,7 +179,7 @@ export function registerCommands(context: ExtensionContext, client: LanguageClie
   });
 
   const commandShowVersion = commands.registerCommand(`${prefix}showVersion`, async () => {
-    window.showInformationMessage("coc-dlang: " + version );
+    window.showInformationMessage("coc-dlang: " + version);
   });
 
 
@@ -190,7 +196,8 @@ export function registerCommands(context: ExtensionContext, client: LanguageClie
     commandAddImport,
     commandImplementMethods,
     commandBuildServedFromSource,
-    commandDownloadServeD,
+    commandDownloadStableServeD,
+    commandDownloadPrereleaseServeD,
     commandSetupLanguageServer,
     commandShowVersion
   );

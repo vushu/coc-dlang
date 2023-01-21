@@ -9,7 +9,8 @@
 | Command                             | Note                                                                                            |
 |-------------------------------------|-------------------------------------------------------------------------------------------------|
 | `code-d.setupLanguageServer`        | Download serve-d. Will download the executable even if it is overridden in `coc-settings.json`. |
-| `code-d.downloadServeD`             | Download latest serve-d release.                                                                |
+| `code-d.downloadStableServeD`       | Download stable-release of serve-d.                                                             |
+| `code-d.downloadPrereleaseServeD`   | Download pre-release of serve-d.                                                                |
 | `code-d.buildServeDFromRepository`  | Build serve-d from repository.                                                                  |
 | `code-d.implementMethods`           | Run serve-d `implementMethods`.                                                                 |
 | `code-d.addImport`                  | Run serve-d `addImport`.                                                                        |

@@ -6,6 +6,7 @@ import path from "path";
 const homedir = require('os').homedir();
 const extensionsFolder = path.join(homedir, '.config', 'coc', 'extensions', 'coc-dlang-data');
 const latestServedUrl = "https://api.github.com/repos/Pure-D/serve-d/releases/latest";
+const latestPrereleaseUrl = "https://api.github.com/repos/Pure-D/serve-d/releases";
 const serveDSourceCodeUrl = "https://github.com/Pure-D/serve-d/archive/refs/heads/master.zip"
 const filename = 'serve-d-master'
 const pathToServedBuildFolder = path.join(extensionsFolder, filename);
@@ -36,9 +37,12 @@ function createDownloadConfig(remoteFilename: string) {
 }
 
 export async function installLanguageServer(extensionsFolder: string): Promise<void | undefined> {
-  window.showQuickpick(['use latest release', 'build directly from repository'], 'Select serve-d version').then(chosen => {
+  window.showQuickpick(['use latest stable release', 'use latest pre-release', 'build directly from repository'], 'Select serve-d version').then(chosen => {
     if (chosen === 0) {
-      downloadServed();
+      downloadLastestStable();
+    }
+    else if (chosen === 1) {
+      downloadPrereleaseServed();
     }
     else {
       // serve-d doesn't download to extensionFolder so we do this manually
@@ -47,30 +51,36 @@ export async function installLanguageServer(extensionsFolder: string): Promise<v
   });
 }
 
-export async function downloadServed(): Promise<string | undefined> {
-  return downloadFromGithub("serve-d", latestServedUrl);
+export async function downloadPrereleaseServed(): Promise<string | undefined> {
+  const downloadConfig = createDownloadConfig("serve-d");
+  const commando = `curl -s ${latestPrereleaseUrl} | grep browser_download_url | grep ${downloadConfig.file} | cut -d '"' -f 4 |  head -n 1 | wget -qi - -P ${downloadConfig.outputPath} && cd ${downloadConfig.outputPath} && ${downloadConfig.extractCommand} && ${downloadConfig.cleanupCommand}`
+  return downloadFromGithub(downloadConfig, commando);
 }
 
-async function downloadFromGithub(remoteFileName: string, url: string): Promise<string | undefined> {
+export async function downloadLastestStable(): Promise<string | undefined> {
 
-  const downloadConfig = createDownloadConfig(remoteFileName);
+  const downloadConfig = createDownloadConfig("serve-d");
+  const commando = `curl -s ${latestPrereleaseUrl} | grep browser_download_url | grep ${downloadConfig.file} | cut -d '"' -f 4 | wget -qi - -P ${downloadConfig.outputPath} && cd ${downloadConfig.outputPath} && ${downloadConfig.extractCommand} && ${downloadConfig.cleanupCommand}`
+  return downloadFromGithub(downloadConfig, commando);
+}
 
-  const commando = `curl -s ${url} | grep browser_download_url | grep ${downloadConfig.file} | cut -d '"' -f 4 | wget -qi - -P ${downloadConfig.outputPath} && cd ${downloadConfig.outputPath} && ${downloadConfig.extractCommand} && ${downloadConfig.cleanupCommand}`
-  window.showNotification({ content: `${remoteFileName} download started`, title: "coc-dlang" });
+async function downloadFromGithub(downloadConfig : any, commando : string): Promise<string | undefined> {
+
+  window.showNotification({ content: `serve-d download started`, title: "coc-dlang" });
   const execPromise = util.promisify(exec);
   return execPromise(commando)
-    .then(
-      ({ stderr, stdout }) => {
-        if (stderr)
-          window.showErrorMessage(stderr);
-        if (stdout)
-          window.showInformationMessage(stdout);
-        window.showNotification({ content: `${remoteFileName} download finished`, title: "coc-dlang" });
-        return path.join(downloadConfig.outputPath, remoteFileName);
-      }
-    ).catch(err =>
-      window.showErrorMessage(err.message)
-    );
+  .then(
+    ({ stderr, stdout }) => {
+      if (stderr)
+        window.showErrorMessage(stderr);
+      if (stdout)
+        window.showInformationMessage(stdout);
+      window.showNotification({ content: `serve-d download finished`, title: "coc-dlang" });
+      return path.join(downloadConfig.outputPath, "serve-d");
+    }
+  ).catch(err =>
+    window.showErrorMessage(err.message)
+  );
 }
 
 export async function buildFromRepository(data): Promise<boolean | undefined> {
@@ -84,16 +94,16 @@ export async function buildFromRepository(data): Promise<boolean | undefined> {
   let success = false;
 
   await execPromise(commando)
-    .then(
-      () => {
-        data.report("Served-d source code download finished");
-        success = true;
-        return true;
-      }
-    ).catch(err => {
-      window.showErrorMessage(err.message)
+  .then(
+    () => {
+      data.report("Served-d source code download finished");
+      success = true;
+      return true;
     }
-    );
+  ).catch(err => {
+    window.showErrorMessage(err.message)
+  }
+  );
   if (success) {
     return buildServed();
   }
@@ -108,12 +118,12 @@ async function buildServed(): Promise<boolean | undefined> {
   window.showNotification({ content: 'This will take a while...', title: "Please wait" })
   let success = false;
   await execPromise(commando)
-    .then(
-      () => {
-        window.showNotification({ content: `Serve-d finished compiling`, title: "" });
-        success = true;
-      }
-    );
+  .then(
+    () => {
+      window.showNotification({ content: `Serve-d finished compiling`, title: "" });
+      success = true;
+    }
+  );
   if (success) {
     return moveServed();
   }
