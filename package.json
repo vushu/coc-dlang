@@ -58,13 +58,18 @@
                     "type": "boolean",
                     "default": true,
                     "description": "Is dub project"
+                },
+                "d.servedPath": {
+                    "type": "string",
+                    "default": "",
+                    "description": "Path to serve-d binary"
                 }
             }
         },
         "commands": [
             {
                 "command": "code-d.Command",
-                "title": "d command title"
+                "title": "D command title"
             }
         ]
     }
