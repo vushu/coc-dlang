@@ -89,7 +89,7 @@ export async function buildFromRepository(data): Promise<boolean | undefined> {
   let deleteOldDirectoryIfExists = `rm -rf ${pathToServedBuildFolder}`;
   let cleanupCommand = `rm ${filename}.zip`;
   let extractCommand = `unzip -qq ${filename}.zip`;
-  const commando = `${deleteOldFileIfExists} && ${deleteOldDirectoryIfExists} && wget --content-disposition --quiet ${serveDSourceCodeUrl} -P ${extensionsFolder} && cd ${extensionsFolder} && ${extractCommand} && ${cleanupCommand}`;
+  const commando = `${deleteOldFileIfExists} && ${deleteOldDirectoryIfExists} && cd ${extensionsFolder} && curl -sLO ${serveDSourceCodeUrl} && ${extractCommand} && ${cleanupCommand}`;
   const execPromise = util.promisify(exec);
   let success = false;
 
