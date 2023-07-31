@@ -5,7 +5,7 @@ import path from "path";
 
 const homedir = require('os').homedir();
 const extensionsFolder = path.join(homedir, '.config', 'coc', 'extensions', 'coc-dlang-data');
-const latestServedUrl = "https://api.github.com/repos/Pure-D/serve-d/releases/latest";
+const latestStableUrl = "https://api.github.com/repos/Pure-D/serve-d/releases/latest";
 const latestPrereleaseUrl = "https://api.github.com/repos/Pure-D/serve-d/releases";
 const serveDSourceCodeUrl = "https://github.com/Pure-D/serve-d/archive/refs/heads/master.zip"
 const filename = 'serve-d-master'
@@ -39,10 +39,10 @@ function createDownloadConfig(remoteFilename: string) {
 export async function installLanguageServer(extensionsFolder: string): Promise<void | undefined> {
   window.showQuickpick(['use latest stable release', 'use latest pre-release', 'build directly from repository'], 'Select serve-d version').then(chosen => {
     if (chosen === 0) {
-      downloadLastestStable();
+      downloadLatestStable();
     }
     else if (chosen === 1) {
-      downloadPrereleaseServed();
+      downloadLatestPrerelease();
     }
     else {
       // serve-d doesn't download to extensionFolder so we do this manually
@@ -51,16 +51,16 @@ export async function installLanguageServer(extensionsFolder: string): Promise<v
   });
 }
 
-export async function downloadPrereleaseServed(): Promise<string | undefined> {
+export async function downloadLatestPrerelease(): Promise<string | undefined> {
   const downloadConfig = createDownloadConfig("serve-d");
-  const commando = `curl -s ${latestPrereleaseUrl} | grep browser_download_url | grep ${downloadConfig.file} | cut -d '"' -f 4 |  head -n 1 | wget -qi - -P ${downloadConfig.outputPath} && cd ${downloadConfig.outputPath} && ${downloadConfig.extractCommand} && ${downloadConfig.cleanupCommand}`
+  const commando = `cd ${downloadConfig.outputPath} && curl -s ${latestPrereleaseUrl} | grep browser_download_url | grep ${downloadConfig.file} | cut -d '"' -f 4 |  head -n 1 | xargs curl -sLO && ${downloadConfig.extractCommand} && ${downloadConfig.cleanupCommand}`
   return downloadFromGithub(downloadConfig, commando);
 }
 
-export async function downloadLastestStable(): Promise<string | undefined> {
+export async function downloadLatestStable(): Promise<string | undefined> {
 
   const downloadConfig = createDownloadConfig("serve-d");
-  const commando = `curl -s ${latestPrereleaseUrl} | grep browser_download_url | grep ${downloadConfig.file} | cut -d '"' -f 4 | wget -qi - -P ${downloadConfig.outputPath} && cd ${downloadConfig.outputPath} && ${downloadConfig.extractCommand} && ${downloadConfig.cleanupCommand}`
+  const commando = `cd ${downloadConfig.outputPath} && curl -s ${latestStableUrl} | grep browser_download_url | grep ${downloadConfig.file} | cut -d '"' -f 4 |  head -n 1 | xargs curl -sLO && ${downloadConfig.extractCommand} && ${downloadConfig.cleanupCommand}`
   return downloadFromGithub(downloadConfig, commando);
 }
 
