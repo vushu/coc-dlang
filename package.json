@@ -1,6 +1,6 @@
 {
     "name": "coc-dlang",
-    "version": "1.2.10",
+    "version": "1.2.11",
     "description": "dlang support for coc",
     "author": "Dan Vu <danvu.hustle@gmail.com>",
     "license": "MIT",
