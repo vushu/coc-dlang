@@ -8,7 +8,7 @@ const extensionsFolder = path.join(homedir, '.config', 'coc', 'extensions', 'coc
 const latestStableUrl = "https://api.github.com/repos/Pure-D/serve-d/releases/latest";
 const latestPrereleaseUrl = "https://api.github.com/repos/Pure-D/serve-d/releases";
 const serveDSourceCodeUrl = "https://github.com/Pure-D/serve-d/archive/refs/heads/master.zip";
-const filename = 'master';
+const filename = 'serve-d-master';
 const pathToServedBuildFolder = path.join(extensionsFolder, filename);
 const pathToServedBuildExecutable = path.join(extensionsFolder, filename, 'serve-d');
 // for coc-dlang
@@ -89,7 +89,7 @@ export async function buildFromRepository(data): Promise<boolean | undefined> {
   let deleteOldDirectoryIfExists = `rm -rf ${pathToServedBuildFolder}`;
   let cleanupCommand = `rm ${filename}.zip`;
   let extractCommand = `unzip -qq ${filename}.zip`;
-  const commando = `${deleteOldFileIfExists} && ${deleteOldDirectoryIfExists} && cd ${extensionsFolder} && curl -sLO ${serveDSourceCodeUrl} && ${extractCommand} && ${cleanupCommand}`;
+  const commando = `${deleteOldFileIfExists} && ${deleteOldDirectoryIfExists} && cd ${extensionsFolder} && curl -o ${filename} -sLO ${serveDSourceCodeUrl} && ${extractCommand} && ${cleanupCommand}`;
   const execPromise = util.promisify(exec);
   let success = false;
 
