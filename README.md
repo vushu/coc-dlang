@@ -23,6 +23,7 @@
 | `code-d.updateImports`              | Run serve-d `updateImports`.                                                                    |
 | `code-d.switchCompiler`             | Use a different compiler.                                                                       |
 | `code-d.listDependencies`           | List current dependencies.                                                                      |
+| `code-d.cleanup`                    | Delete all in coc-dlang-data folder.                                                            |
 
 ## License
 

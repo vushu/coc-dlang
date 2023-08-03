@@ -28,11 +28,11 @@ export function registerCommands(context: ExtensionContext, client: LanguageClie
   });
 
   const commandDownloadStableServeD = commands.registerCommand(`${prefix}downloadStableServeD`, async () => {
-    installer.downloadLastestStable();
+    installer.downloadLatestStable();
   });
 
   const commandDownloadPrereleaseServeD = commands.registerCommand(`${prefix}downloadPrereleaseServeD`, async () => {
-    installer.downloadPrereleaseServed();
+    installer.downloadLatestPrerelease();
   });
 
 
@@ -80,7 +80,6 @@ export function registerCommands(context: ExtensionContext, client: LanguageClie
     try {
       client.sendRequest<any>('served/addImport', params).then((change: any) => {
 
-        //printImports(change);
         if (change.rename)
           return;
         let editations: TextEdit[] = [];
@@ -183,6 +182,11 @@ export function registerCommands(context: ExtensionContext, client: LanguageClie
   });
 
 
+  const commandCleanup = commands.registerCommand(`${prefix}cleanup`, async()=> {
+    installer.cleanupExtensionFolder();
+  });
+
+
   //Register to extensions context
   context.subscriptions.push(commandIgnoreDscannerKey,
     commandListDependencies,
@@ -199,6 +203,7 @@ export function registerCommands(context: ExtensionContext, client: LanguageClie
     commandDownloadStableServeD,
     commandDownloadPrereleaseServeD,
     commandSetupLanguageServer,
-    commandShowVersion
+    commandShowVersion,
+    commandCleanup
   );
 }
