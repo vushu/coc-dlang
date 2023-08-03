@@ -7,8 +7,8 @@ const homedir = require('os').homedir();
 const extensionsFolder = path.join(homedir, '.config', 'coc', 'extensions', 'coc-dlang-data');
 const latestStableUrl = "https://api.github.com/repos/Pure-D/serve-d/releases/latest";
 const latestPrereleaseUrl = "https://api.github.com/repos/Pure-D/serve-d/releases";
-const serveDSourceCodeUrl = "https://github.com/Pure-D/serve-d/archive/refs/heads/master.zip"
-const filename = 'serve-d-master'
+const serveDSourceCodeUrl = "https://github.com/Pure-D/serve-d/archive/refs/heads/master.zip";
+const filename = 'master';
 const pathToServedBuildFolder = path.join(extensionsFolder, filename);
 const pathToServedBuildExecutable = path.join(extensionsFolder, filename, 'serve-d');
 // for coc-dlang
