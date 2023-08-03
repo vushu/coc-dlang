@@ -38,15 +38,22 @@ function createDownloadConfig(remoteFilename: string) {
 
 export async function installLanguageServer(extensionsFolder: string): Promise<void | undefined> {
   window.showQuickpick(['use latest stable release', 'use latest pre-release', 'build directly from repository'], 'Select serve-d version').then(chosen => {
-    if (chosen === 0) {
-      downloadLatestStable();
-    }
-    else if (chosen === 1) {
-      downloadLatestPrerelease();
-    }
-    else {
-      // serve-d doesn't download to extensionFolder so we do this manually
-      window.withProgress({ cancellable: false, title: 'Building serve-d from repository' }, buildFromRepository);
+    switch(chosen) {
+      case 0: {
+        downloadLatestStable();
+        break;
+      }
+      case 1: {
+        downloadLatestPrerelease();
+        break;
+      }
+      case 2: {
+        window.withProgress({ cancellable: false, title: 'Building serve-d from repository' }, buildFromRepository);
+        break;
+      }
+      default: {
+        break;
+      }
     }
   });
 }
