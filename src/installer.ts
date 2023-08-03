@@ -52,6 +52,7 @@ export async function installLanguageServer(extensionsFolder: string): Promise<v
         break;
       }
       default: {
+        window.showInformationMessage("To setup again run :CocCommand code-d.setupLanguageServer");
         break;
       }
     }
@@ -142,7 +143,7 @@ async function moveServed(): Promise<boolean | undefined> {
   const commando = `mv ${pathToServedBuildExecutable} ${servedDestination} && rm -rf ${pathToServedBuildFolder}`;
   const execPromise = util.promisify(exec);
   return execPromise(commando).then(() => {
-    window.showNotification({ content: 'Successfully using serve-d from repository, please restart vim', title: "Completed" })
+    window.showNotification({ content: 'Successfully using serve-d from repository, please run :CocRestart or restart vim', title: "Completed" })
     return true;
   });
 }
