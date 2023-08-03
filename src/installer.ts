@@ -23,11 +23,11 @@ function createDownloadConfig(remoteFilename: string) {
   switch (process.platform) {
     case 'win32':
       file = 'windows-x86_64'
-    extractCommand = `unzip ${remoteFilename}*.zip`;
-    break;
+      extractCommand = `unzip ${remoteFilename}*.zip`;
+      break;
     case 'darwin':
       file = 'osx-x86_64'
-    break;
+      break;
     default:
       //Is linux
       break;
@@ -80,7 +80,7 @@ async function downloadFromGithub(downloadConfig : any, commando : string): Prom
     }
   ).catch(err =>
     window.showErrorMessage(err.message)
-         );
+  );
 }
 
 export async function buildFromRepository(data): Promise<boolean | undefined> {
@@ -103,12 +103,12 @@ export async function buildFromRepository(data): Promise<boolean | undefined> {
   ).catch(err => {
     window.showErrorMessage(err.message)
   }
-         );
-         if (success) {
-           return buildServed();
-         }
+  );
+  if (success) {
+    return buildServed();
+  }
 
-         return false;
+  return false;
 }
 
 async function buildServed(): Promise<boolean | undefined> {
@@ -141,16 +141,15 @@ async function moveServed(): Promise<boolean | undefined> {
 }
 
 export async function cleanupExtensionFolder(): Promise<boolean | undefined> {
-  window.showQuickpick(['No', 'Yes'], 'Delete all in coc-dlang-data?').then(chosen => {
+  return window.showQuickpick(['No', 'Yes'], 'Delete all in coc-dlang-data?').then(chosen => {
     if (chosen === 0) {
-      return;
+      return true;
     }
-  });
-
-  const commando = `rm -rf ${extensionsFolder}/*`;
-  const execPromise = util.promisify(exec);
-  return execPromise(commando).then(() => {
-    window.showNotification({ content: 'Successfully deleted all files in coc-dlang-data!', title: "" })
-    return true;
+    const commando = `rm -rf ${extensionsFolder}/*`;
+    const execPromise = util.promisify(exec);
+    return execPromise(commando).then(() => {
+      window.showNotification({ content: 'Successfully deleted all files in coc-dlang-data!', title: "" })
+      return true;
+    });
   });
 }
